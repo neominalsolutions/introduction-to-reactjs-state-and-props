@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import UserFunctionComponent from './components/user.func.component';
 import './index.css';
+import { UserComponent } from './components/user.component';
 // import { App, MyButton } from './App.tsx';
 // import App from './App'; // default ile export edilmiş
 

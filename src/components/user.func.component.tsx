@@ -18,31 +18,59 @@ function UserFunctionComponent({ id }: Props) {
 
 	// component doma girdiği ve domadan çıktığını anı yakalamamızı sağlayan bir hook. Aynı zamanda api gibi scoket gibi external kaynaklar ile componenti bağlamak içinde kullanırız.
 	// componentDidMount,componentDidUpdate, componentWillUnmount hepsini destekler.
+
+	const loadData = async () => {
+		const data = await (
+			await fetch('https://jsonplaceholder.typicode.com/users')
+		).json();
+		setState({ users: data });
+	};
+
+	// component will unmount
+	const cleanup = () => {
+		console.log('component willunmount, component domdan çıkarken tetiklenir');
+		//component içindeki external kaynakları temizleme işlemleri burada yaparız.
+	};
+
+	// componentDidMount []
 	useEffect(() => {
 		// asenkron load işlemlerini burada gerçekleştiririz.
+		console.log(
+			'[] ile tanımlanırsa componentDidMount gibi davranır, [state] varsa ilk açılışta componentDidMount state değişiminde componentDidUpdate gibi davranır.'
+		);
+		loadData();
 
-		console.log('componentDidMount gibi davranır');
-
-		// 1. yöntem
-		fetch('https://jsonplaceholder.typicode.com/users')
-			.then((response) => {
-				return response.json();
-			})
-			.then((data) => {
-				setState({ users: data });
-			});
+		return cleanup; // Optional eğer component için cleap işi yoksa gerek yok
+		
 	}, []); // [] empty dependecy ile sayfa açılışında 1 kereye mahsus tetiklenir. [state1,state2,state3] -> bu kısım ile de state takibi yapıyoruz. [] sadece component doma girdiği ilk anda çalışıyor.
 
+	// Not: Bir component içerisinde birden fazla useEffect varsa bu durumda hepsi ilk component doma girdiğinde tetiklenir.
+
+	// componentDidUpdate
+	useEffect(() => {
+		// state ilk initial değeri atandıysa logic çalıştır.
+		if (state.users.length > 0) {
+			// logic burada uygulansın.
+			console.log('user State değişti');
+		}
+	}, [state.users]); // eğer component içerisinde setState yapılırsa bu kod bloğu tetiklenir
+
+	// [users,numbers] -> numbers veya users state'den birisi değişirse yine tetiklenir.
+
 	const addUser = () => {
+		// state undefined değilse
 		const id = state.users.length + 1;
 		const email = `user_${id}@test.com`;
+
 		const newUserState = { users: [...state.users, { id, email }] };
-		setState(newUserState); // Not: function componentlerde setState yapısında değişen state'i callback edecek bir yapı yok
+		setState(newUserState);
+
+		// Not: function componentlerde setState yapısında değişen state'i callback edecek bir yapı yok
 	};
 
 	return (
 		<>
-			<p>Kullanıcı Sayısı: {state.users.length}</p>
+			<p>Kullanıcı Sayısı: {state?.users.length}</p>
 			<button onClick={addUser}>Add User</button>
 			<hr></hr>
 		</>
