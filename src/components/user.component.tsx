@@ -50,7 +50,7 @@ export class UserComponent extends Component<Props, State> {
 		console.log('shouldComponentUpdate', nextProps, nextState, nextContext);
 		// eğer yapılan arayüz değişikliği sonucunda componentin berlirli bir koşula göre render alamsını sağlamak için kullanabiliriz. false dersek render gerçekleşmez.
 		// users sayısı 10 ulaşılınca artık render alma.
-		return this.state.users.length > 10 ? false : true; 
+		return this.state.users.length >= 10 ? false : true;
 	}
 
 	// addUser() {
