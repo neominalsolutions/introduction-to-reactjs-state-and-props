@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Component, type ReactNode } from 'react';
-
+import React, { Component, type ReactNode } from 'react';
+import './user.component.css';
+// class import ederken from kullanmıyoruz.
 // Not: Class Componentler Component extend olduğu için dışarıdan props tipinde bir değer bekler.
 // Apiden gelen verilerimizi Interface olarak tanımlıyoruz.
 interface User {
@@ -22,9 +23,26 @@ export class UserComponent extends Component<Props, State> {
 		//this.addUser = this.addUser.bind(this); // private event EventHandler Changed; // Method artık bir vent üzerinden tetiklenebilir oluyor.
 	}
 
+	//re-rendering
+	loadData = async () => {
+		const response = await fetch('https://jsonplaceholder.typicode.com/users');
+		const data: User[] = await response.json();
+		console.log('data', data);
+		this.setState({ users: [...data] });
+	};
+
+	// her bir component için sadece 1 kez tetiklenir.
 	componentDidMount(): void {
-		console.log('component doma ilk girdiğinde tetiklen');
+		console.log('component doma ilk girdiğinde tetiklenir');
 		// async veri çekme işlemlerini burada başlatırız
+		this.loadData();
+
+		// 2. yöntem
+		// fetch('https://jsonplaceholder.typicode.com/users')
+		// 	.then((response) => response.json())
+		// 	.then((data) => {
+		// 		this.setState({ users: [...data] });
+		// 	});
 	}
 	// component içerisinde bir state yada props değişikliğinde tatiklenir.
 	// component içinde bir durum değişikliği varsa bunu yakalamak için kullanırız
@@ -50,7 +68,8 @@ export class UserComponent extends Component<Props, State> {
 		console.log('shouldComponentUpdate', nextProps, nextState, nextContext);
 		// eğer yapılan arayüz değişikliği sonucunda componentin berlirli bir koşula göre render alamsını sağlamak için kullanabiliriz. false dersek render gerçekleşmez.
 		// users sayısı 10 ulaşılınca artık render alma.
-		return this.state.users.length >= 10 ? false : true;
+		return true;
+		//return this.state.users.length >= 10 ? false : true;
 	}
 
 	// addUser() {
@@ -78,17 +97,37 @@ export class UserComponent extends Component<Props, State> {
 	// Not: statelerin değişimi react async olarak çalışır.
 
 	// component yüklendiğinde jsx element döndüreceğimiz method.
+
+	sx: React.CSSProperties = {
+		padding: 5,
+		margin: 5,
+		borderRadius: 5,
+		border: '1px solid gray',
+	};
+
 	render(): ReactNode {
 		console.log('...rendering');
 		return (
 			<>
-				{/* model binding */}
 				<p>
-					Kullanıcı Adeti {this.state.users.length}
+					Kullanıcı Adeti {this.state.users.length} {/* model binding */}
 					<br></br>
 					{/* <button onClick={this.addUser}>User Ekle</button> */}
 					<button onClick={this.addUser}>User Ekle</button>
 				</p>
+				<hr></hr>
+				{/* dinamik veriler ile arayüzde içerik üretmek için kullandık  */}
+				{this.state.users.map((item: User, index: number) => {
+					return (
+						<div style={this.sx} key={item.id}>
+							<div className="item">
+								{' '}
+								<span>{index}</span> - {item.name}
+							</div>
+						</div>
+					);
+				})}
+
 				{/* event binding işlemi yaptık */}
 			</>
 		);

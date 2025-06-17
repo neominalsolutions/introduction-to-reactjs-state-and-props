@@ -1,0 +1,11 @@
+.item {
+    background-color:blueviolet;
+    color: white;
+    padding: 0.5rem;
+    text-decoration: underline;
+}
+
+.item > span {
+    font-weight: 300;
+}
+

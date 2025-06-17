@@ -1,7 +1,7 @@
-import { createRoot } from 'react-dom/client';
-import { UserComponent } from './components/user.component';
-import './index.css';
 import { useState } from 'react';
+import { createRoot } from 'react-dom/client';
+import UserFunctionComponent from './components/user.func.component';
+import './index.css';
 // import { App, MyButton } from './App.tsx';
 // import App from './App'; // default ile export edilmiş
 
@@ -18,10 +18,11 @@ const Home = () => {
 	if (visible) {
 		// ilk açılışta görünür
 		return (
-			<p>
-				<UserComponent id={10} />
+			<>
+				{/* <UserComponent id={10} /> */}
+				<UserFunctionComponent id={10} />
 				{buttonComponent}
-			</p>
+			</>
 		);
 	} else {
 		return (
